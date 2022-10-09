@@ -6,7 +6,7 @@ const root = document.getElementById("root");
 
 const config = {
   rows: 3,
-  columns: 5,
+  columns: 3,
   fps: 60,
   showFieldsNumber: true,
 };
@@ -30,43 +30,43 @@ const snake = {
   speed: 6,
   body: 1,
   position: { x: 0, y: 0 },
-  handleX() {
-    if (snake.position.x > MAX_COLUM) {
-      snake.position.x = 0;
+  handleX(newPosition) {
+    if (newPosition > MAX_COLUM) {
+      this.position.x = 0;
+      return;
     }
-    if (snake.position.x < 0) {
-      snake.position.x = MAX_COLUM;
+    if (newPosition < 0) {
+      this.position.x = MAX_COLUM;
+      return;
     }
+    this.position.x = newPosition;
   },
-  handleY() {
-    if (snake.position.y < 1) {
-      console.log(MAX_ROW);
-      snake.position.y = MAX_ROW;
+  handleY(newPosition) {
+    if (newPosition < 1) {
+      this.position.y = MAX_ROW;
+      return;
     }
-    if (snake.position.y > MAX_ROW) {
-      snake.position.y = 0;
+    if (newPosition >= MAX_ROW) {
+      this.position.y = 0;
+      return;
     }
+    this.position.y = newPosition;
   },
   move(arrow) {
     switch (arrow) {
       case ARROW.UP:
-        snake.position.y -= direction.vertical;
-        this.handleY();
+        this.handleY(this.position.y - direction.vertical);
         break;
       case ARROW.DOWN:
-        snake.position.y += direction.vertical;
-        this.handleY();
+        this.handleY(this.position.y + direction.vertical);
         break;
       case ARROW.LEFT:
-        snake.position.x -= direction.horizontal;
-        this.handleX();
+        this.handleX(this.position.x - direction.horizontal);
         break;
       case ARROW.RIGHT:
-        snake.position.x += direction.horizontal;
-        this.handleX();
+        this.handleX(this.position.x + direction.horizontal);
         break;
     }
-    console.log(snake.position);
   },
 };
 
