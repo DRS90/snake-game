@@ -94,7 +94,10 @@ const game = (snake) => {
 setInterval(() => {
   root.innerHTML = game(snake);
 }, config.fps * 1);
-
+let timer = null;
 window.addEventListener("keydown", ({ key }) => {
-  snake.move(key);
+  if (timer) {
+    clearInterval(timer);
+  }
+  timer = setInterval(() => snake.move(key), config.fps * 6);
 });
