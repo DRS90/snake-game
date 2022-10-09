@@ -78,7 +78,7 @@ const game = (snake) => {
     )
     .map((field, i) => {
       const { x, y } = snake.position;
-      if (x + 1 * y + 1 === i + 1)
+      if (x + y === i)
         return `
         <span class="field">
           <span class="snake"></span>
