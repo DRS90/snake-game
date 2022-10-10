@@ -5,14 +5,14 @@
 const root = document.getElementById("root");
 
 const config = {
-  rows: 3,
-  columns: 3,
+  rows: 9,
+  columns: 9,
   fps: 60,
   showFieldsNumber: true,
 };
 
 const MAX_ROW = config.rows * config.columns;
-const MAX_COLUM = config.columns - 1;
+const MAX_COLUMN = config.columns - 1;
 
 const direction = {
   vertical: config.columns,
@@ -31,18 +31,18 @@ const snake = {
   body: 1,
   position: { x: 0, y: 0 },
   handleX(newPosition) {
-    if (newPosition > MAX_COLUM) {
+    if (newPosition > MAX_COLUMN) {
       this.position.x = 0;
       return;
     }
     if (newPosition < 0) {
-      this.position.x = MAX_COLUM;
+      this.position.x = MAX_COLUMN;
       return;
     }
     this.position.x = newPosition;
   },
   handleY(newPosition) {
-    if (newPosition < 1) {
+    if (newPosition < 0) {
       this.position.y = MAX_ROW;
       return;
     }
@@ -73,17 +73,14 @@ const snake = {
 const game = (snake) => {
   const area = Array(config.rows * config.columns)
     .fill(undefined)
-    .map(
-      (_, i) => `<span class="field">${config.showFieldsNumber ? i : ""}</span>`
-    )
-    .map((field, i) => {
+    .map((_, i) => {
       const { x, y } = snake.position;
       if (x + y === i)
         return `
         <span class="field">
           <span class="snake"></span>
         </span>`;
-      return field;
+      return `<span class="field">${config.showFieldsNumber ? i : ""}</span>`;
     });
 
   const formatArea = (area) => {
@@ -95,16 +92,15 @@ const game = (snake) => {
 setInterval(() => {
   root.innerHTML = game(snake);
 }, config.fps * 1);
+
 let timer = null;
-root.styles = {
-  display: "grid",
-  gridTemplateColumns: `repeat(${config.columns}, 32px)`,
-};
+
 root.style = `
   display: grid;
   grid-template-columns: repeat(${config.columns}, 32px);
   grid-template-rows: repeat(${config.rows}, 32px);
 `;
+
 window.addEventListener("keydown", ({ key }) => {
   if (timer) {
     clearInterval(timer);
