@@ -27,7 +27,7 @@ const ARROW = {
 
 const snake = {
   speed: 5, // fps
-  body: 1,
+  body: 0,
   position: { x: 0, y: 0 },
   handleX(newPosition) {
     if (newPosition > MAX_COLUMN) {
@@ -70,16 +70,40 @@ const snake = {
 };
 
 const game = (snake) => {
+  const hasBody = ({ headPosition, currentField }) => {
+    if (!snake.body) {
+      return false;
+    }
+    const snakeBody = Array(snake.body).fill(undefined);
+    let hasBody = false;
+
+    snakeBody.forEach((_, bodyPiece) => {
+      if (headPosition - (bodyPiece + 1) === currentField) {
+        hasBody = true;
+      }
+    });
+    return hasBody;
+  };
+
   const area = Array(config.rows * config.columns)
     .fill(undefined)
-    .map((_, i) => {
-      const { x, y } = snake.position;
-      if (x + y === i)
+    .map((_, currentField) => {
+      const headPosition = snake.position.x + snake.position.y;
+
+      if (headPosition === currentField)
         return `
         <span class="field">
-          <span class="snake"></span>
+          <span class="snake snake_head"></span>
         </span>`;
-      return `<span class="field">${config.showFieldsNumber ? i : ""}</span>`;
+
+      if (hasBody({ headPosition, currentField }))
+        return `
+            <span class="field">
+              <span class="snake snake_body"></span>
+            </span>
+          `;
+      const fieldValue = config.showFieldsNumber ? currentField : "";
+      return `<span class="field">${fieldValue}</span>`;
     });
 
   const formatArea = (area) => {
@@ -87,10 +111,6 @@ const game = (snake) => {
   };
   return formatArea(area);
 };
-
-setInterval(() => {
-  root.innerHTML = game(snake);
-}, config.fps * 1);
 
 let timer = null;
 
@@ -100,7 +120,16 @@ root.style = `
   grid-template-rows: repeat(${config.rows}, 32px);
 `;
 
+// render game
+root.innerHTML = game(snake);
+
 window.addEventListener("keydown", ({ key }) => {
+  if (!timer) {
+    // start game
+    setInterval(() => {
+      root.innerHTML = game(snake);
+    }, config.fps * 1);
+  }
   if (timer) {
     clearInterval(timer);
   }
