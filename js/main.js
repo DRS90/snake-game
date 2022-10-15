@@ -7,7 +7,6 @@ const root = document.getElementById("root");
 const config = {
   rows: 9,
   columns: 9,
-  fps: 60,
   showFieldsNumber: true,
 };
 
@@ -27,7 +26,7 @@ const ARROW = {
 };
 
 const snake = {
-  speed: 6,
+  speed: 5, // fps
   body: 1,
   position: { x: 0, y: 0 },
   handleX(newPosition) {
@@ -106,5 +105,7 @@ window.addEventListener("keydown", ({ key }) => {
     clearInterval(timer);
   }
 
-  timer = setInterval(() => snake.move(key), config.fps * snake.speed);
+  const secToMs = (seconds) => seconds * 1000;
+
+  timer = setInterval(() => snake.move(key), secToMs(1) / snake.speed);
 });
