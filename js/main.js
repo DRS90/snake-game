@@ -3,6 +3,7 @@
  */
 
 const root = document.getElementById("root");
+const debugContainer = document.getElementById("debugger");
 
 const config = {
   rows: 9,
@@ -27,8 +28,9 @@ const ARROW = {
 
 const snake = {
   speed: 5, // fps
-  body: 0,
-  position: { x: 0, y: 0 },
+  body: 1,
+  position: { x: 5, y: 5 },
+  moving: null,
   handleX(newPosition) {
     if (newPosition > MAX_COLUMN) {
       this.position.x = 0;
@@ -54,15 +56,19 @@ const snake = {
   move(arrow) {
     switch (arrow) {
       case ARROW.UP:
+        this.moving = ARROW.UP;
         this.handleY(this.position.y - direction.vertical);
         break;
       case ARROW.DOWN:
+        this.moving = ARROW.DOWN;
         this.handleY(this.position.y + direction.vertical);
         break;
       case ARROW.LEFT:
+        this.moving = ARROW.LEFT;
         this.handleX(this.position.x - direction.horizontal);
         break;
       case ARROW.RIGHT:
+        this.moving = ARROW.RIGHT;
         this.handleX(this.position.x + direction.horizontal);
         break;
     }
@@ -70,6 +76,7 @@ const snake = {
 };
 
 const game = (snake) => {
+  debugContainer.innerHTML = JSON.stringify(snake, null, 2);
   const hasBody = ({ headPosition, currentField }) => {
     if (!snake.body) {
       return false;
@@ -77,8 +84,15 @@ const game = (snake) => {
     const snakeBody = Array(snake.body).fill(undefined);
     let hasBody = false;
 
+    const positionModifier = {
+      [ARROW.RIGHT]: 1,
+      [ARROW.LEFT]: -1,
+      [ARROW.UP]: -config.columns,
+      [ARROW.DOWN]: config.columns,
+    }[snake.moving];
+
     snakeBody.forEach((_, bodyPiece) => {
-      if (headPosition - (bodyPiece + 1) === currentField) {
+      if (headPosition - (bodyPiece + positionModifier) === currentField) {
         hasBody = true;
       }
     });
@@ -93,7 +107,9 @@ const game = (snake) => {
       if (headPosition === currentField)
         return `
         <span class="field">
-          <span class="snake snake_head"></span>
+          <span class="snake snake_head ${
+            snake.moving?.toLowerCase().replace("arrow", "moving ") || ""
+          }"></span>
         </span>`;
 
       if (hasBody({ headPosition, currentField }))
