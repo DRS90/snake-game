@@ -29,7 +29,7 @@ const ARROW = {
 const snake = {
   speed: 5, // fps
   body: 1,
-  position: { x: 5, y: 5 },
+  position: { x: 0, y: 0 },
   moving: null,
   handleX(newPosition) {
     if (newPosition > MAX_COLUMN) {
