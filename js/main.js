@@ -11,7 +11,7 @@ const config = {
   showFieldsNumber: true,
 };
 
-const MAX_ROW = config.rows * config.columns;
+const MAX_ROW = config.rows * config.columns - config.columns;
 const MAX_COLUMN = config.columns - 1;
 
 const direction = {
@@ -46,7 +46,7 @@ const snake = {
       this.position.y = MAX_ROW;
       return;
     }
-    if (newPosition >= MAX_ROW) {
+    if (newPosition > MAX_ROW) {
       this.position.y = 0;
       return;
     }
